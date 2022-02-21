@@ -9,6 +9,7 @@ function createMap() {
     }).addTo(map);
 
     getData();
+    getBorderWall();
 }
 
 function onEachFeature(feature, layer) {
@@ -23,13 +24,46 @@ function onEachFeature(feature, layer) {
 function getData() {
     fetch('data/borderApprehensionData.geojson')
         .then(function (response) {
-            return response.json
+            return response.json();
         })
         .then(function (json){
+            //create marker options
+            var geojsonMarkerOptions = {
+               radius: 8,
+               fillColor: "#ff7800",
+               color: "#000",
+               weight: 1,
+               opacity: 1,
+               fillOpacity: 0.8
+           };
             L.geoJSON(json, {
+                pointToLayer:function (feature, latlng){
+                    return L.circleMarker(latlng, geojsonMarkerOptions)
+                }, 
                 onEachFeature: onEachFeature
             }).addTo(map);
         })
 };
 
-document.addEventListener('DOMContentLoaded', createMap)
+function getBorderWall(){
+    fetch('data/border_fence_map.geojson')
+        .then(function (response){
+            return response.json();
+        })
+        .then(function (json){
+
+            var borderStyle = {
+                "color": "#ff7800",
+                "weight": 5,
+                "opacity": 0.65
+            };
+
+            L.geoJSON(json, {
+                style: function(feature) {
+                    return L.polyline(feature, borderStyle)
+                }
+            }).addTo(map);
+        })
+};
+
+document.addEventListener('DOMContentLoaded', createMap);
