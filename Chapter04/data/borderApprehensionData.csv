@@ -1,0 +1,22 @@
+borderRegion,sector,location,geocodedLocation,latitude,longitude,FY2014_total,FY2015_total,FY2016_total,FY2017_total,FY2018_total,FY2019_total,FY2020_total
+Coastal,Miami,"909 S.E. 1st Avenue, Suite 980, Miami, FL 33131","909 Southeast 1st Avenue, Miami, FL, USA",25.765082,-80.192008,"2,034","1,752","3,205","2,280","2,169","1,891","1,302"
+Coastal,New Orleans,"423 Canal Street, Room 350, New Orleans, LA 70130","423 Canal Street, New Orleans, LA, USA",29.951742,-90.066476,950,849,764,920,798,1132,572
+Coastal,Ramey,"723 Belt St Aguadilla, PR 00603 ","Aguadilla, Puerto Rico",18.449202,-67.154594,958,557,694,388,280,562,356
+Northern,Blaine,"2410 Nature's Path Way, Blaine, WA 98230","2410 Natures Path Way, Blaine, WA, USA",48.976116,-122.72268,272,282,271,288,359,524,227
+Northern,Buffalo,"201 Lang Blvd., Grand Island, NY 14072","201 Lang Boulevard, Grand Island, NY, USA",43.034766,-78.977861,741,291,226,447,384,537,302
+Northern,Detroit,"211 W. Fort Street, Suite 1200
+Detroit, MI 48226","211 West Fort Street, Detroit, MI, USA",42.329307,-83.049162,647,637,716,"1,070","1,930","1,322",455
+Northern,Grand Forks,"1816 17th Street NE, Grand Forks, ND 58203","Grand Forks, ND, USA",47.908913,-97.057941,767,789,505,496,461,412,227
+Northern,Havre,"2605 5th Avenue SE, Havre, Montana","2605 5th Ave Se, Havre, MT, USA",48.528168,-109.680752,91,64,43,39,47,77,30
+Northern,Houlton,"96 Calais Road, Hodgdon, Maine","Hodgdon, ME, USA",46.048351,-67.844503,45,32,25,30,52,52,104
+Northern,Spokane,"10710 N. Newport Highway, Spokane, Washington 99218","North Newport Highway, Spokane, WA, USA",47.741841,-117.409528,269,190,206,208,347,428,236
+Northern,Swanton,"155 Grand Avenue, Swanton, Vermont","155 Grand Ave, Swanton, VT, USA",44.911637,-73.109221,506,341,291,449,736,1056,574
+Southwest,Big Bend,"300 Madrid Street, Marfa, Texas","Marfa, TX, USA",30.311352,-104.026646,"4,096","5,031","6,366","6,002","8,045","9,637","8,628"
+Southwest,Del Rio,"2401 Dodson Avenue, Del Rio, Texas","Dodson Avenue, Del Rio, TX, USA",29.391204,-100.900006,"24,255","19,013","23,078","13,476","15,833","57,269","40,342"
+Southwest,El Centro,"211 West Aten Road., Imperial, California 92251","Imperial, CA, USA",32.829291,-115.57632,"14,511","12,820","19,448","18,633","29,230","35,138","27,492"
+Southwest,El Paso,"8901 Montana Avenue, El Paso, Texas","Montana Avenue, El Paso, TX, USA",31.808647,-106.250409,"12,339","14,495","25,634","25,193","31,561","182,143","54,396"
+Southwest,Laredo,"207 W. Del Mar Blvd., Laredo, Texas","West Del Mar Boulevard, Laredo, TX, USA",27.568405,-99.493404,"44,049","35,888","36,562","25,460","32,641","38,378","51,425"
+Southwest,Rio Grande Valley,"4400 South Expressway 281, Edinburg, Texas","Edinburg, TX, USA",26.309029,-98.166371,"256,393","147,257","186,830","137,562","162,262","339,135","90,206"
+Southwest,San Diego,"2411 Boswell Road, Chula Vista, California","2411 Boswell Rd, Chula Vista, CA, USA",32.656033,-116.960929,"29,911","26,290","31,891","26,086","38,591","58,049","53,282"
+Southwest,Tucson,"2430 S. Swan Road, Tucson AZ 85711","2430 S Swan Rd, Tucson, AZ, USA",32.194383,-110.892655,"87,915","63,397","64,891","38,657","52,172","63,490","66,076"
+Southwest,Yuma,"4035 S. Ave. A, Yuma AZ 85365","4035 S Avenue A, Yuma, AZ, USA",32.653258,-114.631033,"5,902","7,142","14,170","12,847","26,244","68,269","8,804"
