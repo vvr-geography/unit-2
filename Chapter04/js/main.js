@@ -67,3 +67,4 @@ function getBorderWall(){
 };
 
 document.addEventListener('DOMContentLoaded', createMap);
+//activity 5 upload
