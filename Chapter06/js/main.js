@@ -215,14 +215,20 @@ function updateLegend(json, attribute) {
     //get the max, mean, and min values as an object
     var circles = ["max", "mean", "min"];
 
-    for (var i = 0; i < circles.length; i++) {
+    var legendCircles = {
+        max: dataStats.max,
+        mean: 10000,
+        min: 1000
+    }
+
+    for (var i = 0; i < legendCircles.length; i++) {
         //get the radius
-        var radius = calcPropRadius(dataStats[circles[i]]);
+        var radius = calcPropRadius(legendCircles[circles[i]]);
 
         document.querySelector("#" + circles[i]).setAttribute("cy", 59 - radius);
         document.querySelector("#" + circles[i]).setAttribute("r", radius)
 
-        document.querySelector("#" + circles[i] + "-text").textContent = Math.round(dataStats[circles[i]]);
+        document.querySelector("#" + circles[i] + "-text").textContent = Math.round(legendCircles[circles[i]]);
     }
 };
 
@@ -245,11 +251,18 @@ function createLegend(attributes) {
             //array of circle names to base loop on
             var circles = ["max", "mean", "min"];
 
+            var legendCircles = {
+                max: dataStats.max,
+                mean: 10000,
+                min: 1000
+            }
+
+
             //Step 2: loop to add each circle and text to svg string
-            for (var i = 0; i < circles.length; i++) {
+            for (var i = 0; i < legendCircles.length; i++) {
 
                 //Step 3: assign the r and cy attributes  
-                var radius = calcPropRadius(dataStats[circles[i]]);
+                var radius = calcPropRadius(legendCircles[circles[i]]);
                 var cy = 130 - radius;
 
                 //circle string  
@@ -259,7 +272,7 @@ function createLegend(attributes) {
                 var textY = i * 20 + 20;
 
                 //text string            
-                svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + Math.round(dataStats[circles[i]]) + '</text>';
+                svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + Math.round(legendCircles[circles[i]]) + '</text>';
 
             };
 
