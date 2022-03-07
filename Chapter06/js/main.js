@@ -15,29 +15,29 @@ function createMap() {
     getBorderWall();
 }
 
-function calculateMinValue(json) {
-    //create empty array to store all data values
-    var allValues = [];
-    //loop through each sector 
-    for (var sector of json.features) {
-        for (var year = 2014; year <= 2020; year += 1) {
-            //get apprehension data for current year
-            var value = sector.properties["FY" + String(year) + "_total"];
-            //add value to array
-            allValues.push(value);
-        }
-    }
-    //get minimum value of our array
-    var minValue = Math.min(...allValues)
+// function calculateMinValue(json) {
+//     //create empty array to store all data values
+//     var allValues = [];
+//     //loop through each sector 
+//     for (var sector of json.features) {
+//         for (var year = 2014; year <= 2020; year += 1) {
+//             //get apprehension data for current year
+//             var value = sector.properties["FY" + String(year) + "_total"];
+//             //add value to array
+// //             allValues.push(value);
+//         }
+//     }
+//     //get minimum value of our array
+//     var minValue = Math.min(...allValues)
 
-    return minValue;
-}
+//     return minValue;
+// }
 
 function calcPropRadius(attValue) {
     //constant factor adjusts symbol sizes evenly
     var minRadius = .15;
     //Flannery Apperance Compensation formula
-    var radius = 1.0083 * Math.pow(attValue / minValue, 0.5715) * minRadius
+    var radius = 1.0083 * Math.pow(attValue / dataStats.min, 0.5715) * minRadius
 
     return radius;
 };
@@ -109,7 +109,7 @@ function createPropSymbols(json, attributes) {
     }).addTo(map)
 };
 
-function createSequenceControls(attributes) {
+function createSequenceControls(json, attributes) {
 
     var SequenceControl = L.Control.extend({
         options: {
@@ -161,7 +161,7 @@ function createSequenceControls(attributes) {
             document.querySelector('.range-slider').value = index;
 
             //pass new attribute to update symbols
-            updatePropSymbols(attributes[index]);
+            updatePropSymbols(json, attributes[index]);
         })
     })
 
@@ -177,8 +177,14 @@ function createSequenceControls(attributes) {
 
 
 //Resize proportional symbols according to new attribute values
-function updatePropSymbols(attribute) {
+function updatePropSymbols(json, attribute) {
+
+    var year = attribute.split("_")[0];
+    //update temporal legend
+    document.querySelector("span.year").innerHTML = year;
+
     map.eachLayer(function (layer) {
+
         if (layer.feature && layer.feature.properties[attribute]) {
             var props = layer.feature.properties
 
@@ -191,10 +197,36 @@ function updatePropSymbols(attribute) {
             //update popup content
             popup = layer.getPopup();
             popup.setContent(popupContent.formatted).update();
+
+
         };
-    });  
+    });
+    //update legend content
+    updateLegend(json, attribute);
 };
 
+function updateLegend(json, attribute) {
+    var year = attribute.split("_")[0];
+    //replace legend content
+    document.querySelector("span.year").innerHTML = year;
+
+    calcStats(json, attribute);
+
+    //get the max, mean, and min values as an object
+    var circles = ["max", "mean", "min"];
+
+    for (var i = 0; i < circles.length; i++) {
+        //get the radius
+        var radius = calcPropRadius(dataStats[circles[i]]);
+
+        document.querySelector("#" + circles[i]).setAttribute("cy", 59 - radius);
+        document.querySelector("#" + circles[i]).setAttribute("r", radius)
+
+        document.querySelector("#" + circles[i] + "-text").textContent = Math.round(dataStats[circles[i]]);
+    }
+};
+
+//PSEUDOCODE FOR ATTRIBUTE LEGEND
 function createLegend(attributes) {
     var LegendControl = L.Control.extend({
         options: {
@@ -202,69 +234,70 @@ function createLegend(attributes) {
         },
 
         onAdd: function () {
-            //create the control container with a particular class name
+            // create the control container with a particular class name
             var container = L.DomUtil.create('div', 'legend-control-container');
 
-            //Script for temporal legend 
+            container.innerHTML = '<p class="temporalLegend">CBP Apprehensions in <span class="year">FY2014</span></p>';
 
-            container.innerHTML = '<p class="temporalLegend">CBP Apprehensions in <span class="year">2014</span></p>';
-
-            //Step 1: start attribute legend svg string
+            // Step 1. Add an `<svg>` element to the legend container
             var svg = '<svg id="attribute-legend" width="130px" height="130px">';
 
             //array of circle names to base loop on
             var circles = ["max", "mean", "min"];
 
-            //Step 2: loop to add each circle and text to svg string  
-            for (var i=0; i<circles.length; i++){  
-            
+            //Step 2: loop to add each circle and text to svg string
+            for (var i = 0; i < circles.length; i++) {
+
                 //Step 3: assign the r and cy attributes  
-                var radius = calcPropRadius(dataStats[circles[i]]);  
-                var cy = 130 - radius;  
+                var radius = calcPropRadius(dataStats[circles[i]]);
+                var cy = 130 - radius;
 
                 //circle string  
                 svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#F47821" fill-opacity="0.8" stroke="#000000" cx="65"/>';
-                
+
                 //evenly space out labels            
-            var textY = i * 20 + 20;            
-            
-            //text string            
-            svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + Math.round(dataStats[circles[i]]*100)/100 + " apprehensions" + '</text>';
+                var textY = i * 20 + 20;
 
-            };      
+                //text string            
+                svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + Math.round(dataStats[circles[i]]) + '</text>';
 
+            };
+
+            //close svg string
             svg += "</svg>";
 
+            //add attribute legend svg to container
             container.insertAdjacentHTML('beforeend', svg);
+
+            L.DomEvent.disableClickPropagation(container);
 
             return container;
         }
     });
 
     map.addControl(new LegendControl());
-}; 
 
-function calcStats(json){
+}
+
+
+function calcStats(json, attribute) {
     //create empty array to store all data values
     var allValues = [];
     //loop through each sector
-    for(var sector of json.features){
-        //loop through each year
-        for(var year = 2014; year <= 2020; year+=1){
-              //get population for current year
-              var value = sector.properties["FY" + String(year) + "_total"];
-              //add value to array
-              allValues.push(value);
-        }
+    for (var sector of json.features) {
+        //get population for current year
+        var value = sector.properties[attribute];
+        //add value to array
+        allValues.push(value);
     }
     //get min, max, mean stats for our array
     dataStats.min = Math.min(...allValues);
     dataStats.max = Math.max(...allValues);
     //calculate meanValue
-    var sum = allValues.reduce(function(a, b){return a+b;});
-    dataStats.mean = sum/ allValues.length;
+    var sum = allValues.reduce(function (a, b) { return a + b; });
+    dataStats.mean = sum / allValues.length;
 
-}    
+}
 
 //build an attributes array from data
 function processData(json) {
@@ -295,11 +328,11 @@ function getData() {
         .then(function (json) {
             //create attributes array
             var attributes = processData(json);
-            minValue = calculateMinValue(json);
+            // minValue = calculateMinValue(json);
+            calcStats(json, attributes[0]);
             createPropSymbols(json, attributes);
-            createSequenceControls(attributes);
+            createSequenceControls(json, attributes);
             createLegend(attributes);
-            calcStats(response);
         })
 };
 
