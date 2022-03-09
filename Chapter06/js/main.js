@@ -5,10 +5,11 @@ var dataStats = {};
 //creates the base map and runs the primary fetch functions
 function createMap() {
 
-    map = L.map('map').setView([34, -111], 4);
+    map = L.map('map').setView([30, -105], 5);
 
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     getData();
@@ -42,26 +43,13 @@ function calcPropRadius(attValue) {
     return radius;
 };
 
-// refactoring popup design through procedural javascript
-//function createPopupContent(properties, attribute){
-//      //add city to popup content string
-//      var popupContent = "<p><b>CBP Sector Name: </b>" + properties.sector + "</p>";
-
-//      //add year to pop
-//      var year = attribute.split("_")[0];
-
-//      popupContent += "<p><b>Border Apprehensions in " + year + ": </b>" + properties[attribute] + "</p>";
-
-//      return popupContent;
-// }
-
 //refactoring popup design using object oriented javascript
 function PopupContent(properties, attribute) {
     this.properties = properties;
     this.attribute = attribute;
     this.year = attribute.split("_")[0]
     this.apprehensions = this.properties[attribute];
-    this.formatted = "<p><b>CBP Sector Name: </b>" + this.properties.sector + "</p><p><b>Border Apprehensions in " + this.year + ": </b>" + this.apprehensions + "</p>";
+    this.formatted = "<p><b>Border Patrol Sector Name: </b>" + this.properties.sector + "</p><p><b>Border Apprehensions in " + this.year + ": </b>" + this.apprehensions + "</p>";
 }
 
 //function to convert markers into circle markers
@@ -73,8 +61,8 @@ function pointToLayer(feature, latlng, attributes) {
     //create marker options
     var geojsonMarkerOptions = {
         radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
+        fillColor: "#A00000",
+        color: "#A00000",
         weight: 1,
         opacity: 1,
         fillOpacity: 0.8
@@ -243,30 +231,30 @@ function createLegend(attributes) {
             // create the control container with a particular class name
             var container = L.DomUtil.create('div', 'legend-control-container');
 
-            container.innerHTML = '<p class="temporalLegend">CBP Apprehensions in <span class="year">FY2014</span></p>';
+            container.innerHTML = '<p class="temporalLegend">U.S. Border Patrol Apprehensions in <span class="year">FY2014</span></p>';
 
             // Step 1. Add an `<svg>` element to the legend container
-            var svg = '<svg id="attribute-legend" width="130px" height="130px">';
+            var svg = '<svg id="attribute-legend" width="130px" height="100px">';
 
             //array of circle names to base loop on
             var circles = ["max", "mean", "min"];
 
             var legendCircles = {
                 max: dataStats.max,
-                mean: 10000,
-                min: 1000
+                mean: 100000,
+                min: 10000
             }
 
 
             //Step 2: loop to add each circle and text to svg string
-            for (var i = 0; i < legendCircles.length; i++) {
+            for (var i = 0; i < circles.length; i++) {
 
                 //Step 3: assign the r and cy attributes  
                 var radius = calcPropRadius(legendCircles[circles[i]]);
-                var cy = 130 - radius;
+                var cy = 60 - radius;
 
                 //circle string  
-                svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#F47821" fill-opacity="0.8" stroke="#000000" cx="65"/>';
+                svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#A00000" fill-opacity="0.8" stroke="#ffffff" cx="40"/>';
 
                 //evenly space out labels            
                 var textY = i * 20 + 20;
@@ -303,6 +291,19 @@ function calcStats(json, attribute) {
         //add value to array
         allValues.push(value);
     }
+
+    // var allValues = [];
+    // //loop through each city
+    // for(var city of json.features){
+    //     //loop through each year
+    //     for(var year = 2014; year <= 2020; year+=1){
+    //           //get population for current year
+    //           var value = sector.properties["FY" + String(year) + "_total" ];
+    //           //add value to array
+    //           allValues.push(value);
+    //     }
+    // }
+
     //get min, max, mean stats for our array
     dataStats.min = Math.min(...allValues);
     dataStats.max = Math.max(...allValues);
@@ -349,26 +350,28 @@ function getData() {
         })
 };
 
-//fetches the borderwall data and styles it
-function getBorderWall() {
-    fetch('data/border_fence_map.geojson')
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (json) {
+// var borderStyle = {
+//     "color": "#F09511",
+//     "weight": 3,
+//     "opacity": 0.4
+// };
 
-            var borderStyle = {
-                "color": "#ff7800",
-                "weight": 5,
-                "opacity": 0.65
-            };
+// //fetches the borderwall data and styles it
+// function getBorderWall() {
+//     fetch('data/border_fence_map.geojson')
+//         .then(function (response) {
+//             return response.json();
+//         })
+//         .then(function (json) {
 
-            L.geoJSON(json, {
-                style: function (feature) {
-                    return L.polyline(feature, borderStyle)
-                }
-            }).addTo(map);
-        })
-};
+
+
+//             L.geoJSON(json, {
+//                 style: function (feature) {
+//                     return L.polyline(feature, borderStyle)
+//                 }
+//             }).addTo(map);
+//         })
+// };
 
 document.addEventListener('DOMContentLoaded', createMap);
